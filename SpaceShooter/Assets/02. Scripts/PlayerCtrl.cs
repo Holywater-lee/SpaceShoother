@@ -3,11 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 
 // 20181220 이성수
-/*
- 왼쪽 쉬프트키를 누르면 이동속도가 0.5배가 됩니다.
- 왼쪽 컨트롤키를 누르면 이동속도가 1.5배가 됩니다.
- 두 키의 입력이 같이 이루어진 경우 먼저 입력된 키가 적용됩니다.
- */
+
+[System.Serializable]
+public class Anim
+{
+	public AnimationClip idle;
+	public AnimationClip runForward;
+	public AnimationClip runBackward;
+	public AnimationClip runRight;
+	public AnimationClip runLeft;
+}
 
 public class PlayerCtrl : MonoBehaviour
 {
@@ -22,13 +27,19 @@ public class PlayerCtrl : MonoBehaviour
 
 	MoveState currentMoveState = MoveState.Normal;
 
-	//Animator anim;
-	//bool isMove = false;
+	Animator anim;
+	bool isMove = false;
+	//public Anim anim;
+	//public Animation _animation;
 
 	void Start()
 	{
 		tr = GetComponent<Transform>();
-		//anim = GetComponentInChildren<Animator>();
+		anim = GetComponentInChildren<Animator>();
+
+		//_animation = GetComponentInChildren<Animation>();
+		//_animation.clip = anim.idle;
+		//_animation.Play();
 	}
 
 	void Update()
@@ -36,18 +47,40 @@ public class PlayerCtrl : MonoBehaviour
 		h = Input.GetAxis("Horizontal");
 		v = Input.GetAxis("Vertical");
 
-		//anim.SetBool("isMove", isMove);
-		//anim.SetFloat("hMove", h, 1f, Time.deltaTime * 10f);
-		//anim.SetFloat("vMove", v, 1f, Time.deltaTime * 10f);
-		//isMove = Vector3.Magnitude(moveDir) != 0 ? true : false;
-
 		Vector3 moveDir = new Vector3(h, 0, v);
+
+		anim.SetBool("isMove", isMove);
+		anim.SetFloat("hMove", h, 1f, Time.deltaTime * 10f);
+		anim.SetFloat("vMove", v, 1f, Time.deltaTime * 10f);
+		isMove = Vector3.Magnitude(moveDir) != 0 ? true : false;
 
 		ChangeMoveState();
 		ChangeMoveSpeed();
 
 		tr.Rotate(Vector3.up * Time.deltaTime * rotSpeed * Input.GetAxis("Mouse X"));
 		tr.Translate(moveDir.normalized * applySpeed * Time.deltaTime, Space.Self); // applySpeed를 적용하였습니다.
+		
+		/*
+		if (v >= 0.1f)
+		{
+			_animation.CrossFade(anim.runForward.name, 0.3f);
+		}
+		else if (v <= -0.1f)
+		{
+			_animation.CrossFade(anim.runBackward.name, 0.3f);
+		}
+		else if (h >= 0.1f)
+		{
+			_animation.CrossFade(anim.runRight.name, 0.3f);
+		}
+		else if (h <= -0.1f)
+		{
+			_animation.CrossFade(anim.runLeft.name, 0.3f);
+		}
+		else
+		{
+			_animation.CrossFade(anim.idle.name, 0.3f);
+		}*/
 	}
 
 	// 현재 이동 상태(currentMoveState)를 변경해주는 메서드입니다.

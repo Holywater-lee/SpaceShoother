@@ -4,29 +4,41 @@ using UnityEngine;
 
 public class FireCtrl : MonoBehaviour
 {
-	public Transform bullet;
+	public GameObject bullet;
 	public Transform firePos;
 
-	public float cooldown = 500f;
+	public float accuracy = 5f;
+
+	public float cooldown = 200f;
 	float nextCooldown;
 
-	private void Start()
+	private void Update()
 	{
-		
+		Shot();
 	}
 
-	private void Update()
+	void Shot()
 	{
 		if (Input.GetMouseButton(0))
 		{
 			if (Time.time >= nextCooldown)
+			{
 				Fire();
+				nextCooldown = Time.time + cooldown / 1000f;
+			}
 		}
+	}
+
+	float GetRandom(float a)
+	{
+		return Random.Range(-a, a);
 	}
 
 	void Fire()
 	{
-		Instantiate(bullet, firePos.position, firePos.rotation);
+		Vector3 tempPos = firePos.forward * 100 + new Vector3(GetRandom(accuracy), GetRandom(accuracy), GetRandom(accuracy));
+		Quaternion fakeLook = Quaternion.LookRotation(tempPos);
+		Instantiate(bullet, firePos.position, fakeLook);
 		nextCooldown = Time.time + cooldown / 1000f;
 	}
 }

@@ -337,9 +337,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f7157f200bf5aa41aeeb8cceb8444f6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bullet: {fileID: 6940450285281318199, guid: 6cc1263bcfa95954089e9721c9fd97fd, type: 3}
+  bullet: {fileID: 3241528119917262181, guid: 6cc1263bcfa95954089e9721c9fd97fd, type: 3}
   firePos: {fileID: 545255881}
-  cooldown: 500
+  rifleCooldown: 200
+  shotgunCooldown: 1000
 --- !u!1001 &456903026
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -487,7 +488,7 @@ GameObject:
   m_Layer: 0
   m_Name: firePos
   m_TagString: Untagged
-  m_Icon: {fileID: 0}
+  m_Icon: {fileID: -5487077368411116049, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1

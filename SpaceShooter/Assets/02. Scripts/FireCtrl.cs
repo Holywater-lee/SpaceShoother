@@ -2,15 +2,24 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(AudioSource))]
 public class FireCtrl : MonoBehaviour
 {
 	public GameObject bullet;
 	public Transform firePos;
+	public AudioClip gunFireClip;
 
 	public float accuracy = 5f;
 
 	public float cooldown = 200f;
 	float nextCooldown;
+
+	AudioSource audioSource;
+	private void Start()
+	{
+		audioSource = GetComponent<AudioSource>();
+		audioSource.clip = gunFireClip;
+	}
 
 	private void Update()
 	{
@@ -24,6 +33,7 @@ public class FireCtrl : MonoBehaviour
 			if (Time.time >= nextCooldown)
 			{
 				Fire();
+				PlayFireSound();
 				nextCooldown = Time.time + cooldown / 1000f;
 			}
 		}
@@ -40,5 +50,10 @@ public class FireCtrl : MonoBehaviour
 		Quaternion fakeLook = Quaternion.LookRotation(tempPos);
 		Instantiate(bullet, firePos.position, fakeLook);
 		nextCooldown = Time.time + cooldown / 1000f;
+	}
+
+	void PlayFireSound()
+	{
+		audioSource.Play();
 	}
 }

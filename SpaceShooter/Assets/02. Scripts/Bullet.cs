@@ -12,12 +12,4 @@ public class Bullet : MonoBehaviour
 		GetComponent<Rigidbody>().AddForce(speed * transform.forward, ForceMode.Impulse);
 		Destroy(gameObject, 3f);
 	}
-
-	private void OnCollisionEnter(Collision collision)
-	{
-		if (collision.gameObject.CompareTag("Wall"))
-		{
-			Destroy(gameObject);
-		}
-	}
 }

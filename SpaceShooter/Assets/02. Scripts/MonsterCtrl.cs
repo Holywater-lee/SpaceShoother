@@ -16,6 +16,8 @@ public class MonsterCtrl : MonoBehaviour
 	public float attackDist = 2.0f;
 	private bool isDie = false;
 
+	private int hp = 100;
+
 	private void Start()
 	{
 		playerTr = GameObject.FindWithTag("Player").transform;
@@ -81,8 +83,43 @@ public class MonsterCtrl : MonoBehaviour
 	{
 		if (collision.gameObject.CompareTag("Bullet"))
 		{
+			hp -= collision.gameObject.GetComponent<Bullet>().damage;
 			Destroy(collision.gameObject);
-			animator.SetTrigger("IsHit");
+
+			if (hp <= 0)
+			{
+				MonsterDie();
+			}
+			else
+				animator.SetTrigger("IsHit");
 		}
+	}
+
+	void MonsterDie()
+	{
+		StopAllCoroutines();
+		isDie = true;
+		monsterState = MonsterState.Die;
+		nvAgent.isStopped = true;
+		animator.SetTrigger("IsDie");
+
+		gameObject.GetComponentInChildren<CapsuleCollider>().enabled = false;
+
+		foreach(Collider coll in gameObject.GetComponentsInChildren<SphereCollider>())
+		{
+			coll.enabled = false;
+		}
+	}
+
+	void CreateBloodEffect(Vector3 pos)
+	{
+
+	}
+
+	void OnPlayerDie()
+	{
+		StopAllCoroutines();
+		nvAgent.isStopped = true;
+		animator.SetTrigger("IsPlayerDie");
 	}
 }

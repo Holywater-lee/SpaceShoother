@@ -32,6 +32,8 @@ public class PlayerCtrl : MonoBehaviour
 	//public Anim anim;
 	//public Animation _animation;
 
+	public int hp = 100;
+
 	void Start()
 	{
 		tr = GetComponent<Transform>();
@@ -59,7 +61,7 @@ public class PlayerCtrl : MonoBehaviour
 
 		tr.Rotate(Vector3.up * Time.deltaTime * rotSpeed * Input.GetAxis("Mouse X"));
 		tr.Translate(moveDir.normalized * applySpeed * Time.deltaTime, Space.Self); // applySpeed를 적용하였습니다.
-		
+
 		/*
 		if (v >= 0.1f)
 		{
@@ -83,7 +85,31 @@ public class PlayerCtrl : MonoBehaviour
 		}*/
 	}
 
-	// 현재 이동 상태(currentMoveState)를 변경해주는 메서드입니다.
+	private void OnTriggerEnter(Collider other)
+	{
+		if (other.CompareTag("PUNCH"))
+		{
+			hp -= 10;
+			Debug.Log("플레이어 hp: " + hp);
+			if (hp <= 0)
+			{
+				PlayerDie();
+			}
+		}
+	}
+
+	void PlayerDie()
+	{
+		Debug.Log("플레이어 사망");
+		GameObject[] monsters = GameObject.FindGameObjectsWithTag("Monster");
+
+		foreach (GameObject m in monsters)
+		{
+			m.SendMessage("OnPlayerDie", SendMessageOptions.DontRequireReceiver);
+		}
+		gameObject.SetActive(false);
+	}
+
 	void ChangeMoveState()
 	{
 		switch (currentMoveState)
@@ -115,7 +141,6 @@ public class PlayerCtrl : MonoBehaviour
 		}
 	}
 
-	// 현재 이동 상태(currentMoveState)에 따라 실제 이동속도(applySpeed)를 적용해주는 메서드입니다.
 	void ChangeMoveSpeed()
 	{
 		switch (currentMoveState)

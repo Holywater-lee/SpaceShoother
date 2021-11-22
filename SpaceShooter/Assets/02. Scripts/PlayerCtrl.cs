@@ -33,9 +33,12 @@ public class PlayerCtrl : MonoBehaviour
 	//public Animation _animation;
 
 	public int hp = 100;
+	private int initHp;
 
 	void Start()
 	{
+		initHp = hp;
+
 		tr = GetComponent<Transform>();
 		anim = GetComponentInChildren<Animator>();
 
@@ -91,6 +94,8 @@ public class PlayerCtrl : MonoBehaviour
 		{
 			hp -= 10;
 			Debug.Log("플레이어 hp: " + hp);
+			GameUI.Instance.imgHPBar.fillAmount = (float)hp / (float)initHp;
+
 			if (hp <= 0)
 			{
 				PlayerDie();

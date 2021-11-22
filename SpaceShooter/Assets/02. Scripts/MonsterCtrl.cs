@@ -11,6 +11,7 @@ public class MonsterCtrl : MonoBehaviour
 	private Transform playerTr;
 	private NavMeshAgent nvAgent;
 	private Animator animator;
+	//private GameUI gameUI;
 
 	public float traceDist = 10.0f;
 	public float attackDist = 2.0f;
@@ -23,6 +24,7 @@ public class MonsterCtrl : MonoBehaviour
 		playerTr = GameObject.FindWithTag("Player").transform;
 		nvAgent = GetComponent<NavMeshAgent>();
 		animator = GetComponent<Animator>();
+		//gameUI = FindObjectOfType<GameUI>();
 
 		StartCoroutine(CheckMonsterStateCoroutine());
 		StartCoroutine(MonsterActionCoroutine());
@@ -109,6 +111,8 @@ public class MonsterCtrl : MonoBehaviour
 		{
 			coll.enabled = false;
 		}
+
+		GameUI.Instance.DisplayScore(50);
 	}
 
 	void CreateBloodEffect(Vector3 pos)

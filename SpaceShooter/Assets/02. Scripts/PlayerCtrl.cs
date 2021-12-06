@@ -4,16 +4,6 @@ using UnityEngine;
 
 // 20181220 이성수
 
-[System.Serializable]
-public class Anim
-{
-	public AnimationClip idle;
-	public AnimationClip runForward;
-	public AnimationClip runBackward;
-	public AnimationClip runRight;
-	public AnimationClip runLeft;
-}
-
 public class PlayerCtrl : MonoBehaviour
 {
 	enum MoveState { Normal, Fast, Slow };
@@ -23,14 +13,12 @@ public class PlayerCtrl : MonoBehaviour
 	public float moveSpeed = 10f;
 	public float rotSpeed = 100f;
 
-	float applySpeed; // 실제로 적용될 이동속도에 관한 변수입니다.
+	float applySpeed; // 실제로 적용될 이동속도에 관한 변수
 
 	MoveState currentMoveState = MoveState.Normal;
 
 	Animator anim;
 	bool isMove = false;
-	//public Anim anim;
-	//public Animation _animation;
 
 	public int hp = 100;
 	private int initHp;
@@ -42,9 +30,8 @@ public class PlayerCtrl : MonoBehaviour
 		tr = GetComponent<Transform>();
 		anim = GetComponentInChildren<Animator>();
 
-		//_animation = GetComponentInChildren<Animation>();
-		//_animation.clip = anim.idle;
-		//_animation.Play();
+		applySpeed = moveSpeed;
+		anim.SetFloat("moveSpeed", applySpeed / moveSpeed);
 	}
 
 	void Update()
@@ -59,33 +46,10 @@ public class PlayerCtrl : MonoBehaviour
 		anim.SetFloat("vMove", v, 1f, Time.deltaTime * 10f);
 		isMove = Vector3.Magnitude(moveDir) != 0 ? true : false;
 
-		ChangeMoveState();
-		ChangeMoveSpeed();
+		ApplyMoveState();
 
 		tr.Rotate(Vector3.up * Time.deltaTime * rotSpeed * Input.GetAxis("Mouse X"));
-		tr.Translate(moveDir.normalized * applySpeed * Time.deltaTime, Space.Self); // applySpeed를 적용하였습니다.
-
-		/*
-		if (v >= 0.1f)
-		{
-			_animation.CrossFade(anim.runForward.name, 0.3f);
-		}
-		else if (v <= -0.1f)
-		{
-			_animation.CrossFade(anim.runBackward.name, 0.3f);
-		}
-		else if (h >= 0.1f)
-		{
-			_animation.CrossFade(anim.runRight.name, 0.3f);
-		}
-		else if (h <= -0.1f)
-		{
-			_animation.CrossFade(anim.runLeft.name, 0.3f);
-		}
-		else
-		{
-			_animation.CrossFade(anim.idle.name, 0.3f);
-		}*/
+		tr.Translate(moveDir.normalized * applySpeed * Time.deltaTime, Space.Self);
 	}
 
 	private void OnTriggerEnter(Collider other)
@@ -115,40 +79,23 @@ public class PlayerCtrl : MonoBehaviour
 		gameObject.SetActive(false);
 	}
 
-	void ChangeMoveState()
+	void ChangeMoveState(MoveState state)
 	{
-		switch (currentMoveState)
+		switch(currentMoveState)
 		{
 			case MoveState.Normal:
-				if (Input.GetKeyDown(KeyCode.LeftControl))
-				{
-					currentMoveState = MoveState.Fast;
-				}
-				if (Input.GetKeyDown(KeyCode.LeftShift))
-				{
-					currentMoveState = MoveState.Slow;
-				}
 				break;
 
 			case MoveState.Fast:
-				if (Input.GetKeyUp(KeyCode.LeftControl))
-				{
-					currentMoveState = MoveState.Normal;
-				}
 				break;
 
 			case MoveState.Slow:
-				if (Input.GetKeyUp(KeyCode.LeftShift))
-				{
-					currentMoveState = MoveState.Normal;
-				}
 				break;
 		}
-	}
 
-	void ChangeMoveSpeed()
-	{
-		switch (currentMoveState)
+		currentMoveState = state;
+
+		switch (state)
 		{
 			case MoveState.Normal:
 				applySpeed = moveSpeed;
@@ -160,6 +107,38 @@ public class PlayerCtrl : MonoBehaviour
 
 			case MoveState.Slow:
 				applySpeed = moveSpeed * 0.5f;
+				break;
+		}
+		anim.SetFloat("moveSpeed", applySpeed / moveSpeed);
+	}
+
+	void ApplyMoveState()
+	{
+		switch (currentMoveState)
+		{
+			case MoveState.Normal:
+				if (Input.GetKeyDown(KeyCode.LeftShift))
+				{
+					ChangeMoveState(MoveState.Fast);
+				}
+				if (Input.GetKeyDown(KeyCode.LeftControl))
+				{
+					ChangeMoveState(MoveState.Slow);
+				}
+				break;
+
+			case MoveState.Fast:
+				if (Input.GetKeyUp(KeyCode.LeftShift))
+				{
+					ChangeMoveState(MoveState.Normal);
+				}
+				break;
+
+			case MoveState.Slow:
+				if (Input.GetKeyUp(KeyCode.LeftControl))
+				{
+					ChangeMoveState(MoveState.Normal);
+				}
 				break;
 		}
 	}

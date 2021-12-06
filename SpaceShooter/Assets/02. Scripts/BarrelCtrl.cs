@@ -9,9 +9,7 @@ public class BarrelCtrl : MonoBehaviour
 	void ExplosionBarrel()
 	{
 		isRemoved = true;
-		int t_fxNum;
-		ParticleStorage.Instance.particlePrefabsDic.TryGetValue("Explosion", out t_fxNum);
-		var fx_explosion = Instantiate(ParticleStorage.Instance.particlePrefabs[t_fxNum], transform.position, Quaternion.identity);
+		GameObject fx_explosion = Instantiate(ParticleStorage.Instance.FindPrefabWithString("Explosion"), transform.position, Quaternion.identity);
 
 		Collider[] colls = Physics.OverlapSphere(transform.position, 10f);
 		foreach (Collider coll in colls)

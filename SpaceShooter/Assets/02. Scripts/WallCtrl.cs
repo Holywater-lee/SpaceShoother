@@ -8,9 +8,7 @@ public class WallCtrl : MonoBehaviour
 	{
 		if (collision.gameObject.CompareTag("Bullet"))
 		{
-			int t_fxNum;
-			ParticleStorage.Instance.particlePrefabsDic.TryGetValue("Spark", out t_fxNum);
-			var fx_spark = Instantiate(ParticleStorage.Instance.particlePrefabs[t_fxNum], collision.transform.position, Quaternion.identity);
+			var fx_spark = Instantiate(ParticleStorage.Instance.FindPrefabWithString("Spark"), collision.transform.position, Quaternion.identity);
 
 			Destroy(fx_spark, fx_spark.GetComponent<ParticleSystem>().main.duration + 0.2f);
 			Destroy(collision.gameObject);

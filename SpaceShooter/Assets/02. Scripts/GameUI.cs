@@ -10,6 +10,8 @@ public class GameUI : MonoBehaviour
 
 	public Image imgHPBar;
 
+	bool cursorLocked = false;
+
 	private static GameUI instance = null;
 
 	void Start()
@@ -18,6 +20,7 @@ public class GameUI : MonoBehaviour
 
 		totalScore = PlayerPrefs.GetInt("TOTAL_SCORE", 0);
 		DisplayScore(0);
+		LockCursor();
 	}
 
 	public static GameUI Instance
@@ -30,6 +33,29 @@ public class GameUI : MonoBehaviour
 			}
 
 			return instance;
+		}
+	}
+
+	private void Update()
+	{
+		if (Input.GetKeyDown(KeyCode.Escape))
+		{
+			LockCursor();
+		}
+	}
+
+	void LockCursor()
+	{
+		cursorLocked = !cursorLocked;
+		if (cursorLocked)
+		{
+			Cursor.visible = false;
+			Cursor.lockState = CursorLockMode.Locked;
+		}
+		else
+		{
+			Cursor.visible = true;
+			Cursor.lockState = CursorLockMode.None;
 		}
 	}
 

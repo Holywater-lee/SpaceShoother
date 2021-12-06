@@ -5,19 +5,31 @@ using UnityEngine;
 [System.Serializable]
 public class ParticleStorage : MonoBehaviour
 {
-	public GameObject[] particlePrefabs;
+	[SerializeField]
+	private GameObject[] particlePrefabs;
 
 	static ParticleStorage sm_instance;
 
-	public Dictionary<string, int> particlePrefabsDic = new Dictionary<string, int>()
+	private Dictionary<string, int> particlePrefabsDic = new Dictionary<string, int>()
 	{
 		{"Spark", 0},
-		{"Explosion", 1}
+		{"Explosion", 1},
+		{"BloodEffect", 2},
+		{"BloodDecal", 3}
 	};
+
+	public GameObject FindPrefabWithString(string name)
+	{
+		int tempInt;
+		particlePrefabsDic.TryGetValue(name, out tempInt);
+		return particlePrefabs[tempInt];
+	}
+
 	private void Awake()
 	{
 		if (sm_instance == null) sm_instance = this;
 	}
+
 	public static ParticleStorage Instance
 	{
 		get

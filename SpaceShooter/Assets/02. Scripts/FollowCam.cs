@@ -19,6 +19,7 @@ public class FollowCam : MonoBehaviour
 	public float height = 3.0f;
 	public float dampTrace = 30.0f; // 부드러운 추적을 위한 변수
 	public float targetHeight = 2.0f;
+	//LayerMask camColliderMask;
 
 	private Transform tr;
 
@@ -30,13 +31,31 @@ public class FollowCam : MonoBehaviour
 		{
 			targetTr = FindObjectOfType<PlayerCtrl>().transform;
 		}
+		//camColliderMask = 1 << LayerMask.NameToLayer("Ground") | 1 << LayerMask.NameToLayer("PLAYER");
+		//camColliderMask = ~camColliderMask;
 	}
 
 	void LateUpdate()
 	{
 		Vector3 lookPos = targetTr.position + Vector3.up * targetHeight;
-		tr.position = Vector3.Lerp(tr.position, targetTr.position - targetTr.forward * dist + Vector3.up * height, Time.deltaTime * dampTrace);
+		/*
+		Vector3 destination = -targetTr.forward * dist + targetTr.up * height;
+		float camDistance = Mathf.Sqrt(dist * dist + height * height);
+		RaycastHit hitInfo;
+		Physics.Raycast(targetTr.position, destination.normalized, out hitInfo, camDistance, camColliderMask);
 
+		if (hitInfo.point != Vector3.zero)
+		{
+			tr.position = Vector3.Lerp(tr.position, hitInfo.point, Time.deltaTime * dampTrace);
+		}
+		else
+		{
+			tr.position = Vector3.Lerp(tr.position, targetTr.position - targetTr.forward * dist + targetTr.up * height, Time.deltaTime * dampTrace);
+		}
+		
+		Debug.DrawRay(targetTr.position, destination.normalized * camDistance);
+		*/
+		tr.position = Vector3.Lerp(tr.position, targetTr.position - targetTr.forward * dist + targetTr.up * height, Time.deltaTime * dampTrace);
 		tr.LookAt(lookPos);
 	}
 }

@@ -8,17 +8,18 @@ TagManager:
   - Wall
   - PUNCH
   - Monster
+  - Ground
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Post Process
   - Water
   - UI
   - PLAYER
   - BODY
   - PUNCH
-  - 
+  - Ground
   - 
   - 
   - 

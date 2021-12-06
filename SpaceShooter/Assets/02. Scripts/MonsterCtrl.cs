@@ -24,7 +24,6 @@ public class MonsterCtrl : MonoBehaviour
 		playerTr = GameObject.FindWithTag("Player").transform;
 		nvAgent = GetComponent<NavMeshAgent>();
 		animator = GetComponent<Animator>();
-		//gameUI = FindObjectOfType<GameUI>();
 
 		StartCoroutine(CheckMonsterStateCoroutine());
 		StartCoroutine(MonsterActionCoroutine());
@@ -87,6 +86,7 @@ public class MonsterCtrl : MonoBehaviour
 		{
 			hp -= collision.gameObject.GetComponent<Bullet>().damage;
 			Destroy(collision.gameObject);
+			CreateBloodEffect(collision.transform.position);
 
 			if (hp <= 0)
 			{
@@ -113,11 +113,25 @@ public class MonsterCtrl : MonoBehaviour
 		}
 
 		GameUI.Instance.DisplayScore(50);
+		Invoke("DisableThis", 3f);
+	}
+
+	void DisableThis()
+	{
+		gameObject.SetActive(false);
 	}
 
 	void CreateBloodEffect(Vector3 pos)
 	{
+		GameObject blood_1 = Instantiate(ParticleStorage.Instance.FindPrefabWithString("BloodEffect"), pos, Quaternion.identity);
+		Destroy(blood_1, blood_1.GetComponent<ParticleSystem>().main.duration);
 
+		Vector3 decalPos = transform.position + Vector3.up * 0.05f;
+		Quaternion decalRot = Quaternion.Euler(90, 0, Random.Range(0, 360));
+		GameObject blood_2 = Instantiate(ParticleStorage.Instance.FindPrefabWithString("BloodDecal"), decalPos, decalRot);
+		float scale = Random.Range(1.5f, 3.5f);
+		blood_2.transform.localScale = Vector3.one * scale;
+		Destroy(blood_2, 5f);
 	}
 
 	void OnPlayerDie()

@@ -12,6 +12,7 @@ public class PlayerCtrl : MonoBehaviour
 	private Transform tr;
 	public float moveSpeed = 10f;
 	public float rotSpeed = 100f;
+	bool isDie = false;
 
 	float applySpeed; // 실제로 적용될 이동속도에 관한 변수
 
@@ -36,15 +37,16 @@ public class PlayerCtrl : MonoBehaviour
 
 	void Update()
 	{
+		if (isDie) return;
+
 		h = Input.GetAxis("Horizontal");
 		v = Input.GetAxis("Vertical");
 
 		Vector3 moveDir = new Vector3(h, 0, v);
 
 		anim.SetBool("isMove", isMove);
-		anim.SetFloat("hMove", h, 1f, Time.deltaTime * 10f);
-		anim.SetFloat("vMove", v, 1f, Time.deltaTime * 10f);
-		isMove = Vector3.Magnitude(moveDir) != 0 ? true : false;
+
+		isMove = Vector3.SqrMagnitude(moveDir) > 0.01f ? true : false;
 
 		ApplyMoveState();
 
@@ -64,6 +66,10 @@ public class PlayerCtrl : MonoBehaviour
 			{
 				PlayerDie();
 			}
+			else
+			{
+				anim.SetTrigger("Hit");
+			}
 		}
 	}
 
@@ -71,6 +77,8 @@ public class PlayerCtrl : MonoBehaviour
 	{
 		Debug.Log("플레이어 사망");
 		GameObject[] monsters = GameObject.FindGameObjectsWithTag("Monster");
+		isDie = true;
+		anim.SetTrigger("Die");
 
 		foreach (GameObject m in monsters)
 		{

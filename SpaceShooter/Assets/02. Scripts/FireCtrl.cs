@@ -46,6 +46,7 @@ public class FireCtrl : MonoBehaviour
 
 	void Fire()
 	{
+		GetComponentInChildren<Animator>().SetTrigger("Attack");
 		Vector3 tempPos = firePos.forward * 100 + new Vector3(GetRandom(accuracy), GetRandom(accuracy), GetRandom(accuracy));
 		Quaternion fakeLook = Quaternion.LookRotation(tempPos);
 		Instantiate(bullet, firePos.position, fakeLook);
